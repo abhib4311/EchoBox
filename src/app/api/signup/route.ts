@@ -62,7 +62,7 @@ export async function POST(req: Request) {
         return Response.json({
             success: true,
             message: "User registered successfully"
-        })
+        }, { status: 200 });
 
 
     } catch (error) {
