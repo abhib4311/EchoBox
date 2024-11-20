@@ -15,12 +15,12 @@ import { Input } from "@/components/ui/input";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 
 const SignUpPage = () => {
     const [username, setUsername] = useState('');
@@ -66,6 +66,7 @@ const SignUpPage = () => {
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         setIsSubmitting(true);
         try {
+            console.log(data)
             const response = await axios.post(`/api/sign-up`, data);
             if (response.status === 200) {
                 toast({
@@ -112,11 +113,10 @@ const SignUpPage = () => {
 
                                         />
                                     </FormControl>
-                                    {isUnique ? (
-                                        <p className="text-sm text-green-600 mt-1 ">{usernameMessage}</p>
-                                    ) : (
-                                        <p className="text-sm text-red-600 mt-1">{usernameMessage}</p>
-                                    )}
+                                    {(username ?
+                                        <p className={`text-sm mt-1 ${isUnique ? "text-green-600" : "text-red-600"}`}>
+                                            {usernameMessage}
+                                        </p> : <p className={`text-sm mt-1 text-gray-500`}>Enter a unique username</p>)}
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -156,7 +156,13 @@ const SignUpPage = () => {
                         />
 
                         <Button type="submit" disabled={isSubmitting || isCheckingUsername}>
-                            {isSubmitting ? 'Submitting...' : 'Sign Up'}
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="animate-spin" /> Please wait....
+                                </>
+                            ) : (
+                                'Sign Up'
+                            )}
                         </Button>
                     </form>
                 </Form>
