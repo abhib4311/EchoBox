@@ -45,7 +45,7 @@ export async function POST(req: Request) {
                 verifyCode,
                 verifyCodeExpiry,
                 isVerified: false,
-                isAcceptingMessages: false,
+                isAcceptingMessages: true,
                 messages: []
             })
             await newUser.save();
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
         }
         return Response.json({
             success: true,
-            message: "User registered successfully"
+            message: "User registered successfully.please check your email for verification"
         }, { status: 200 });
 
 
