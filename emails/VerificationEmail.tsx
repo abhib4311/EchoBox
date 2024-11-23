@@ -38,7 +38,7 @@ export default function VerificationEmail({ username, otp }: VerificationEmailPr
                 </Row>
                 <Row>
                     <Text>
-                        Thank you for registering. Please use the following verification
+                        Thank you for registering with {<><b>EchoBox</b></>}. Please use the following verification
                         code to complete your registration:
                     </Text>
                 </Row>
