@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { signInSchema } from "@/schemas/signInSchema";
+import Link from "next/link";
 
 const SignInPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -129,6 +130,9 @@ const SignInPage = () => {
                                 'Sign In'
                             )}
                         </Button>
+                        {/* <div className=" "> */}
+                        <Link href="/sign-up" className="text-sm pt-2 text-gray-600 hover:underline ">Dont have an account?</Link>
+                        {/* </div> */}
                     </form>
                 </Form>
             </div>

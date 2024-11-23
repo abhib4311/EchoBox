@@ -21,6 +21,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const SignUpPage = () => {
     const [username, setUsername] = useState('');
@@ -155,7 +156,7 @@ const SignUpPage = () => {
                             )}
                         />
 
-                        <Button type="submit" disabled={isSubmitting || isCheckingUsername}>
+                        <Button type="submit" disabled={isSubmitting || isCheckingUsername} className="w-full">
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="animate-spin" /> Please wait....
@@ -164,6 +165,8 @@ const SignUpPage = () => {
                                 'Sign Up'
                             )}
                         </Button>
+
+                        <Link href="/sign-in" className="text-sm text-gray-500 hover:underline">Already have an account?</Link>
                     </form>
                 </Form>
             </div>
