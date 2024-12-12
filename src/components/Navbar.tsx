@@ -3,28 +3,36 @@
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
+import { LogOut, SignpostIcon, User2Icon } from "lucide-react";
 
 const Navbar = () => {
     const { data: session } = useSession();
 
     return (
-        <nav className="p-4 md:p-6 shadow-md">
-            <div className="container mx-auto flex items-center justify-between">
+        <nav className="w-full p-4 top-0 z-50 sticky  bg-white md:p-6 shadow-md  ">
+            <div className="max-w-9xl flex items-center justify-between md:mx-auto">
+
                 {/* Site Name */}
-                <Link href="/" className="font-bold text-xl">
+                <Link href="/" className="font-bold text-2xl text-gray-800 hover:text-gray-950 transition ml-8">
                     EchoBox
                 </Link>
 
                 {/* Navigation Links */}
-                <div className="flex items-center">
+                <div className="flex items-center space-x-4">
                     {session?.user ? (
                         <>
-                            {/* Show username or fallback to email */}
-                            <span className="mr-4 text-sm text-gray-600">
-                                Logged in as {session?.user?.username || session?.user?.email}
-                            </span>
-                            <Button className="md:w-auto" onClick={() => signOut()}>
-                                Sign out
+                            {/* User Info */}
+                            <div className="flex items-center space-x-2 text-gray-700">
+                                <User2Icon className="w-5 h-5" />
+                                <span className="text-sm font-medium">
+                                    {session.user.username?.toUpperCase() || session.user.email?.toUpperCase()}
+                                </span>
+                            </div>
+
+                            {/* Sign Out Button */}
+                            <Button onClick={() => signOut()}>
+
+                                <LogOut />
                             </Button>
                         </>
                     ) : (

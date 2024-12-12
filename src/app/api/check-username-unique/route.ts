@@ -9,7 +9,7 @@ export async function GET(req: Request) {
         const queryParams = new URL(req.url).searchParams;
         const username = queryParams.get("username");
         const result = usernameSchema.safeParse(username);
-        console.log(result)
+        // console.log(result)
         if (!result.success) {
             const userNameError = result.error.format()._errors || [];
             return Response.json({
@@ -21,13 +21,15 @@ export async function GET(req: Request) {
         if (existingUser) {
             return Response.json({
                 success: false,
-                message: "Username already exists"
-            }, { status: 400 });
+                message: "Username already exists",
+                alreadyExists: true
+            });
         }
         return Response.json({
             success: true,
-            message: "Username is unique"
-        })
+            message: "Username is unique",
+            alreadyExists: false
+        }, { status: 200 });
 
 
     } catch (error: any) {
