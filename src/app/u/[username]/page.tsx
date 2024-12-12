@@ -33,13 +33,12 @@ const suggestedMessages = [
 ];
 
 export default function SendMessage() {
-    const params = useParams<{ username: string }>();
+    const { username } = useParams<{ username: string }>();
     const router = useRouter();
-    const username = params?.username || "";
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
-    const [isValidUser, setIsValidUser] = useState(false); // Track user validity
-    const [isCheckingUser, setIsCheckingUser] = useState(true); // Track validation loading state
+    const [isValidUser, setIsValidUser] = useState(false);
+    const [isCheckingUser, setIsCheckingUser] = useState(true);
 
     const form = useForm<z.infer<typeof messageSchema>>({
         resolver: zodResolver(messageSchema),
@@ -58,9 +57,8 @@ export default function SendMessage() {
                 ...data,
                 username,
             });
-            if (!response.data.success) {
-                throw new Error(response.data.message);
-            }
+            if (!response.data.success) throw new Error(response.data.message);
+
             toast({
                 title: "Success",
                 description: "Message sent successfully!",
@@ -82,7 +80,7 @@ export default function SendMessage() {
 
     useEffect(() => {
         const checkUsernameValidity = async () => {
-            setIsCheckingUser(true); // Start validation loading state
+            setIsCheckingUser(true);
             try {
                 const response = await axios.get(`/api/check-username-unique?username=${username}`);
                 if (!response.data.alreadyExists) {
@@ -91,18 +89,19 @@ export default function SendMessage() {
                         description: "The username you provided is not valid.",
                         variant: "destructive",
                     });
-                    return; // Exit further execution
+                    return;
                 }
-                setIsValidUser(true); // Mark user as valid
+                setIsValidUser(true);
             } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : "Unexpected error occurred.";
                 toast({
                     title: "Error",
-                    description: "Something went wrong while validating the username.",
+                    description: errorMessage,
                     variant: "destructive",
                 });
-                router.push("/"); // Redirect in case of error
+                router.push("/");
             } finally {
-                setIsCheckingUser(false); // End validation loading state
+                setIsCheckingUser(false);
             }
         };
 
@@ -111,9 +110,7 @@ export default function SendMessage() {
 
     return (
         <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl shadow-sm max-h-screen">
-            <h1 className="text-4xl font-bold mb-6 text-center">
-                Send Anonymous Message
-            </h1>
+            <h1 className="text-4xl font-bold mb-6 text-center">Send Anonymous Message</h1>
 
             {isCheckingUser ? (
                 <div className="flex flex-col items-center justify-center min-h-full">
@@ -131,10 +128,7 @@ export default function SendMessage() {
             ) : (
                 <>
                     <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-6"
-                        >
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
                                 control={form.control}
                                 name="content"
@@ -173,7 +167,6 @@ export default function SendMessage() {
                         </form>
                     </Form>
 
-                    {/* Suggestions Section */}
                     <div className="my-8 space-y-4">
                         <Card>
                             <CardHeader>

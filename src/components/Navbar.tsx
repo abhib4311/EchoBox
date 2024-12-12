@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "./ui/button";
-import { LogOut, SignpostIcon, User2Icon } from "lucide-react";
+import { LogOut, User2Icon } from "lucide-react";
 
 const Navbar = () => {
     const { data: session } = useSession();

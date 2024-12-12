@@ -1,9 +1,7 @@
-'use client';
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useDebounceCallback } from 'usehooks-ts'
+import { useDebounceCallback } from 'usehooks-ts';
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
@@ -46,15 +44,18 @@ const SignUpPage = () => {
     useEffect(() => {
         const checkUsernameUnique = async () => {
             if (username) {
-
                 setIsCheckingUsername(true);
                 setUsernameMessage('');
                 try {
                     const response = await axios.get(`/api/check-username-unique?username=${username}`);
                     setUsernameMessage(response.data.message || '');
                     setIsUnique(response.data.success);
-                } catch (error: any) {
-                    setUsernameMessage(error.response?.data?.message || 'Error checking username availability.');
+                } catch (error: unknown) {
+                    if (axios.isAxiosError(error)) {
+                        setUsernameMessage('Error checking username availability.');
+                    } else {
+                        setUsernameMessage('An unexpected error occurred.');
+                    }
                     setIsUnique(false);
                 } finally {
                     setIsCheckingUsername(false);
@@ -67,7 +68,6 @@ const SignUpPage = () => {
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         setIsSubmitting(true);
         try {
-            console.log(data)
             const response = await axios.post(`/api/sign-up`, data);
             if (response.status === 200) {
                 toast({
@@ -76,12 +76,20 @@ const SignUpPage = () => {
                 });
                 router.replace(`/verify/${data.username}`);
             }
-        } catch (error: any) {
-            toast({
-                title: "Error",
-                variant: "destructive",
-                description: error.response?.data?.message || 'Failed to sign up.',
-            });
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                toast({
+                    title: "Error",
+                    variant: "destructive",
+                    description: error.response?.data.message || 'Failed to sign up.',
+                });
+            } else {
+                toast({
+                    title: "Error",
+                    variant: "destructive",
+                    description: 'An unexpected error occurred.',
+                });
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -111,13 +119,15 @@ const SignUpPage = () => {
                                                 debounced(e.target.value);
                                                 field.onChange(e);
                                             }}
-
                                         />
                                     </FormControl>
-                                    {(username ?
+                                    {(username ? (
                                         <p className={`text-sm mt-1 ${isUnique ? "text-green-600" : "text-red-600"}`}>
                                             {usernameMessage}
-                                        </p> : <p className={`text-sm mt-1 text-gray-500`}>Enter a unique username</p>)}
+                                        </p>
+                                    ) : (
+                                        <p className="text-sm mt-1 text-gray-500">Enter a unique username</p>
+                                    ))}
                                     <FormMessage />
                                 </FormItem>
                             )}

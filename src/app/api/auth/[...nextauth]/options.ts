@@ -4,6 +4,16 @@ import bcrypt from "bcryptjs";
 import { dbConnect } from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 
+
+interface Token {
+    id: string;
+    username: string;
+    email: string;
+    isVerified: boolean;
+    isAcceptingMessages: boolean;
+}
+
+
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
@@ -41,26 +51,25 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id;
-                token.username = user.username;
-                token.email = user.email;
-                token.isVerified = user.isVerified;
-                token.isAcceptingMessages = user.isAcceptingMessages;
+                // Typing token to use the Token interface
+                (token as Token).id = user.id;
+                (token as Token).username = user.username;
+                (token as Token).email = user.email;
+                (token as Token).isVerified = user.isVerified;
+                (token as Token).isAcceptingMessages = user.isAcceptingMessages;
             }
             return token;
         },
         async session({ session, token }) {
-
             if (token) {
-
-                session.user.id = token.id;
-                session.user.username = token.username;
-                session.user.email = token.email;
-                session.user.isVerified = token.isVerified;
-                session.user.isAcceptingMessages = token.isAcceptingMessages;
-
+                // Ensure session.user is correctly typed
+                session.user.id = (token as Token).id;
+                session.user.username = (token as Token).username;
+                session.user.email = (token as Token).email;
+                session.user.isVerified = (token as Token).isVerified;
+                session.user.isAcceptingMessages = (token as Token).isAcceptingMessages;
             }
-            return session
+            return session;
         },
     },
 

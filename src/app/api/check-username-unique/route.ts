@@ -1,6 +1,5 @@
 import { dbConnect } from "@/lib/dbConnect";
 import UserModel from "@/model/User";
-import { z } from "zod";
 import { usernameSchema } from "@/schemas/signUpSchema";
 
 export async function GET(req: Request) {
@@ -9,7 +8,7 @@ export async function GET(req: Request) {
         const queryParams = new URL(req.url).searchParams;
         const username = queryParams.get("username");
         const result = usernameSchema.safeParse(username);
-        // console.log(result)
+
         if (!result.success) {
             const userNameError = result.error.format()._errors || [];
             return Response.json({
@@ -17,6 +16,7 @@ export async function GET(req: Request) {
                 message: userNameError
             }, { status: 400 });
         }
+
         const existingUser = await UserModel.findOne({ username, isVerified: true });
         if (existingUser) {
             return Response.json({
@@ -25,18 +25,28 @@ export async function GET(req: Request) {
                 alreadyExists: true
             });
         }
+
         return Response.json({
             success: true,
             message: "Username is unique",
             alreadyExists: false
         }, { status: 200 });
 
-
-    } catch (error: any) {
-        console.error(error);
-        return Response.json({
-            success: false,
-            message: error.message
-        }, { status: 500 });
+    } catch (error: unknown) {
+        // Ensure error is of type Error
+        if (error instanceof Error) {
+            console.error(error);
+            return Response.json({
+                success: false,
+                message: error.message
+            }, { status: 500 });
+        } else {
+            // Handle case where error is not an instance of Error
+            console.error('Unknown error occurred', error);
+            return Response.json({
+                success: false,
+                message: 'An unexpected error occurred.'
+            }, { status: 500 });
+        }
     }
 }
