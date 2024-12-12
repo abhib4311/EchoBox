@@ -40,11 +40,22 @@ export async function POST(req: Request) {
 
 
     }
-    catch (error: any) {
-        console.error(error);
-        return Response.json({
-            success: false,
-            message: "Error verifying code"
-        }, { status: 500 });
+    catch (error: unknown) {
+        // Ensure error is of type Error
+        if (error instanceof Error) {
+            console.error(error);
+            return Response.json({
+                success: false,
+                message: error.message
+            }, { status: 500 });
+        } else {
+            // Handle case where error is not an instance of Error
+            console.error('Unknown error occurred', error);
+            return Response.json({
+                success: false,
+                message: 'An unexpected error occurred.Error verifying code'
+            }, { status: 500 });
+        }
     }
+
 }

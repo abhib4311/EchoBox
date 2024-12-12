@@ -5,7 +5,7 @@ import UserModel from "@/model/User";
 import { User } from "next-auth";
 import mongoose from "mongoose";
 
-export async function GET(req: Request) {
+export async function GET() {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
@@ -49,12 +49,21 @@ export async function GET(req: Request) {
             messages: foundUser[0].messages
         }, { status: 200 });
 
-    } catch (error: any) {
-        console.error("Error fetching messages:", error);
-        return Response.json({
-            success: false,
-            message: "Failed to get messages",
-            error: error.message || "Unknown error"
-        }, { status: 500 });
+    } catch (error: unknown) {
+        // Ensure error is of type Error
+        if (error instanceof Error) {
+            console.error(error);
+            return Response.json({
+                success: false,
+                message: error.message
+            }, { status: 500 });
+        } else {
+            // Handle case where error is not an instance of Error
+            console.error('Unknown error occurred', error);
+            return Response.json({
+                success: false,
+                message: 'An unexpected error occurred.'
+            }, { status: 500 });
+        }
     }
 }
