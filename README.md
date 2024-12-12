@@ -74,21 +74,26 @@ EchoBox is a responsive, anonymous message-sending platform built with Next.js a
 ## Screenshots
 
 1. **Homepage**
+
    ![Homepage](./screenshots/home.png)
    The homepage provides a brief introduction to EchoBox, featuring buttons to sign up or log in.
 
-2. **Signin Page**
+3. **Signin Page**
+
    ![Signin Page](./screenshots/sign-in.png)
    Users can log in securely using the form. The form is built with React Hook Form.
 
-3. **Signup Page (Debouncing in Action)**
+5. **Signup Page (Debouncing in Action)**
+
    ![Signup Page](./screenshots/signup.png)
    The signup page includes an OTP verification process with Resend, and username validation using debouncing. As users type, the form checks the availability of the username.
 
-4. **Dashboard**
+7. **Dashboard**
+
    ![Dashboard](./screenshots/dashboard.png)
    The dashboard allows users to view incoming anonymous messages and manage their settings.
 
-5. **Message Sharing Link**
+9. **Message Sharing Link**
+
    ![Message Link Sharing](./screenshots/dashboard1.png)
    Logged-in users can share a unique link to receive anonymous messages. The user has the option to toggle between accepting or rejecting new messages through the dashboard.
