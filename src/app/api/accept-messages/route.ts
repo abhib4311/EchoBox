@@ -18,9 +18,11 @@ export async function POST(req: Request) {
         }, { status: 401 });
     }
 
-    const { messageFlag } = await req.json();
+    const { acceptMessages } = await req.json();
     try {
-        const foundUser = await UserModel.findByIdAndUpdate(userId, { isAcceptingMessages: messageFlag }, { new: true });
+        console.log(userId)
+        const foundUser = await UserModel.findByIdAndUpdate(userId, { isAcceptingMessages: acceptMessages }, { new: true });
+        // console.log(foundUser)
         if (!foundUser) {
             return Response.json({
                 success: false,
@@ -61,6 +63,7 @@ export async function GET(req: Request) {
                 message: "User not found"
             }, { status: 404 });
         }
+        console.log(foundUser.isAcceptingMessages)
         return Response.json({
             success: true,
             isAcceptingMessages: foundUser.isAcceptingMessages
